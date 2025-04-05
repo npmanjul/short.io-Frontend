@@ -32,7 +32,9 @@ const Signup = () => {
       );
       if (response.status === 201) {
         localStorage.setItem("token", response.data.token);
-        navigate("/chats");
+        localStorage.setItem("userId", response.data._id);
+
+        navigate("/url");
         toast.success("Signup successful");
         setLoader(false);
       } else {
@@ -47,7 +49,7 @@ const Signup = () => {
   return (
     <>
       <Navbar />
-      <div className="pt-18 h-[100vh] flex justify-center items-center bg-black">
+      <div className="pt-18 h-[100vh] flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
         <div>
           <img src="/public/signup.png" className="h-[600px] w-[600px]" />
         </div>
@@ -58,7 +60,7 @@ const Signup = () => {
               onSubmit={handleSubmit}
               className="flex justify-start items-center flex-col  rounded-lg text-[16px] w-full"
             >
-              <label className="w-full flex  items-start flex-col text-gray-700 dark:text-gray-300 font-medium relative">
+              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium relative">
                 Name :
                 <input
                   type="text"
@@ -81,7 +83,7 @@ const Signup = () => {
                 </div>
               </label>
 
-              <label className="w-full flex  items-start flex-col text-gray-700 dark:text-gray-300 font-medium mt-3 relative">
+              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium mt-3 relative">
                 Email :
                 <input
                   type="email"
@@ -104,7 +106,7 @@ const Signup = () => {
                 </div>
               </label>
 
-              <label className="w-full flex  items-start flex-col text-gray-700 dark:text-gray-300 font-medium mt-3 relative">
+              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium mt-3 relative">
                 Password:
                 <input
                   type={visible ? "text" : "password"}

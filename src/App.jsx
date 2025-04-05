@@ -6,6 +6,7 @@ import Redirect from "./pages/Redirect";
 import Url from "./pages/Url";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup";
+import TimeOut from "./pages/TimeOut.jsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/timeout" element={<TimeOut />} />
       </Routes>
     </BrowserRouter>
   );

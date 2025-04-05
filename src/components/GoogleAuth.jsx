@@ -21,8 +21,10 @@ const GoogleAuth = () => {
             uid: result.user.uid,
           }
         );
+
         if (response.status === 201) {
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data._id);
           navigate("/url");
           toast.success("Login successful");
         }
@@ -44,10 +46,10 @@ const GoogleAuth = () => {
       <div className="w-full">
         <button
           onClick={signInWithGoogle}
-          className="flex items-center justify-center gap-2 bg-white dark:bg-black text-black-700 border py-2 border-gray-300 shadow-md  rounded-lg hover:bg-gray-100 hover:dark:bg-gray-600 cursor-pointer transition duration-300 w-full"
+          className="flex items-center justify-center gap-2 bg-white dark:bg-black text-black-700 dark:text-white border py-2 border-gray-300 shadow-md  rounded-lg hover:bg-gray-100 hover:dark:bg-gray-600 cursor-pointer transition duration-300 w-full"
         >
           <FcGoogle size={25} />
-          <span className="text-[16px] font-medium text-white">
+          <span className="text-[16px] font-medium dark:text-white text-black">
             Sign in with Google
           </span>
         </button>

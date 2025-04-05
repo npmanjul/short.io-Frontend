@@ -33,6 +33,7 @@ const Login = () => {
 
       if (response.status === 201) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data._id);
         navigate("/url");
         toast.success("Login successful");
         setLoader(false);
@@ -48,7 +49,7 @@ const Login = () => {
   return (
     <>
       <Navbar />
-      <div className="pt-18 bg-black flex justify-center items-center h-[100vh] w-full">
+      <div className="pt-18 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black flex justify-center items-center h-[100vh] w-full">
         <div className="flex justify-center items-center w-[50%]">
           <div className="flex justify-center items-center flex-col max-w-[450px]  border-2  border-gray-400 p-9 rounded-2xl">
             <h1 className="text-white text-5xl font-bold pb-7">Login</h1>
@@ -56,7 +57,7 @@ const Login = () => {
               onSubmit={handleSubmit}
               className="flex items-center flex-col  rounded-lg text-[16px] w-full"
             >
-              <label className="w-full flex  items-start flex-col text-gray-700 dark:text-gray-300 text-[16px] relative">
+              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 text-[16px] relative">
                 Email :
                 <input
                   type="email"
@@ -80,7 +81,7 @@ const Login = () => {
                 </div>
               </label>
 
-              <label className="w-full flex  items-start flex-col text-gray-700 dark:text-gray-300 text-[16px] mt-3 relative">
+              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 text-[16px] mt-3 relative">
                 Password:
                 <input
                   type={visible ? "text" : "password"}

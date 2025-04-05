@@ -2,47 +2,62 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
+import { StoreState } from "../context/Store";
 
 const Redirect = () => {
   const [redirectURL, setRedirectURL] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const { id } = useParams();
+
   const [analyticsData, setAnalyticsData] = useState({
-    longitude: "" || "unavailable",
-    latitude: "",
-    accuracy: "",
-    ipAddress: "",
-    deviceType: "",
-    connectionType: "",
-    downloadSpeed: "",
-    deviceCores: "",
-    deviceRAM: "",
-    browser: "",
-    platform: "",
-    language: "",
-    onlineStatus: "",
-    vendor: "",
-    batteryLevel: "" || "unavailable",
-    chargingStatus: "" || "unavailable",
-    dischargingTime: "" || "unavailable",
-    screenWidth: "",
-    screenHeight: "",
-    availableScreenWidth: "",
-    availableScreenHeight: "",
-    colorDepth: "",
-    devicePixelRatio: "",
-    timeZone: "",
-    date: "",
-    time: "",
+    location: "unavailable",
+    ipAddress: "unavailable",
+    city: "unavailable",
+    region: "unavailable",
+    country: "unavailable",
+    zip: "unavailable",
+    currency: "unavailable",
+    isp: "unavailable",
+    org: "unavailable",
+    as: "unavailable",
+    asname: "unavailable",
+    reverse: "unavailable",
+    proxy: "unavailable",
+    hosting: "unavailable",
+    deviceType: "unavailable",
+    connectionType: "unavailable",
+    downloadSpeed: "unavailable",
+    deviceCores: "unavailable",
+    deviceRAM: "unavailable",
+    browser: "unavailable",
+    platform: "unavailable",
+    language: "unavailable",
+    onlineStatus: "unavailable",
+    vendor: "unavailable",
+    batteryLevel: "unavailable",
+    chargingStatus: "unavailable",
+    dischargingTime: "unavailable",
+    screenWidth: "unavailable",
+    screenHeight: "unavailable",
+    availableScreenWidth: "unavailable",
+    availableScreenHeight: "unavailable",
+    colorDepth: "unavailable",
+    devicePixelRatio: "unavailable",
+    timeZone: "unavailable",
+    date: "unavailable",
+    time: "unavailable",
+    urlid: id,
   });
 
   // Function to fetch redirect URL
-  const redirectUrl = async () => {
+  const fetchRedirectUrl = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8000/api/v1/url/${id}`
       );
       if (response.data?.redirectURL) {
         setRedirectURL(response.data.redirectURL);
+        setIsActive(response.data.isActive);
       }
     } catch (error) {
       console.error("Error fetching redirect URL:", error);
@@ -58,13 +73,30 @@ const Redirect = () => {
     return "Unknown Device";
   };
 
-  // Function to fetch IP address
+  // Function to fetch IP address and geolocation
   const fetchIP = async () => {
     try {
-      const response = await axios.get("https://api64.ipify.org?format=json");
+      const response = await axios.get("https://ipinfo.io/json");
+      const ipInfo = await axios.get(
+        `http://ip-api.com/json/${response.data.ip}?fields=status,message,country,region,city,zip,currency,isp,org,as,asname,reverse,proxy,hosting,lat,lon`
+      );
+
       setAnalyticsData((prev) => ({
         ...prev,
+        location: `${response.data.loc}`, // Format: "latitude,longitude"
         ipAddress: response.data.ip,
+        city: response.data.city,
+        region: response.data.region,
+        country: response.data.country,
+        zip: response.data.postal,
+        currency: ipInfo.data.currency,
+        isp: ipInfo.data.isp,
+        org: ipInfo.data.org,
+        as: ipInfo.data.as,
+        asname: ipInfo.data.asname,
+        reverse: ipInfo.data.reverse,
+        proxy: ipInfo.data.proxy,
+        hosting: ipInfo.data.hosting,
       }));
     } catch (error) {
       console.error("Error fetching IP:", error);
@@ -75,12 +107,14 @@ const Redirect = () => {
   const getBatteryInfo = async () => {
     try {
       const battery = await navigator.getBattery();
-      console.log(battery);
       setAnalyticsData((prev) => ({
         ...prev,
-        batteryLevel: battery.level * 100,
+        batteryLevel: `${Math.round(battery.level * 100)}`,
         chargingStatus: battery.charging ? "Yes" : "No",
-        dischargingTime: battery.dischargingTime / 3600,
+        dischargingTime:
+          battery.dischargingTime !== Infinity
+            ? `${Math.round(battery.dischargingTime / 3600)}`
+            : "N/A",
       }));
     } catch (error) {
       console.error("Error fetching battery info:", error);
@@ -89,27 +123,33 @@ const Redirect = () => {
 
   // Function to get time and timezone
   const getTimeInfo = () => {
-    try {
-      const response = new Date();
-      setAnalyticsData((prev) => ({
-        ...prev,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        date: response.toLocaleDateString(),
-        time: response.toLocaleTimeString(),
-      }));
-    } catch (error) {
-      console.error("Error fetching time info:", error);
-    }
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    const formattedDate = `${day}/${month}/${year}`;
+
+    setAnalyticsData((prev) => ({
+      ...prev,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      date: formattedDate,
+      time: formattedTime,
+    }));
   };
 
   // Function to push analytics data
   const pushAnalytics = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:8000/api/v1/analytics/pushanalytics`,
         analyticsData
       );
-      console.log("Push analytics response:", response);
     } catch (error) {
       console.error("Error pushing analytics:", error);
     }
@@ -117,73 +157,54 @@ const Redirect = () => {
 
   // Fetch redirect URL
   useEffect(() => {
-    redirectUrl();
+    fetchRedirectUrl();
   }, [id]);
 
-  // Redirect when the URL is fetched
+  // Redirect when analytics data is ready
   useEffect(() => {
-    if (redirectURL && analyticsData.longitude && analyticsData.ipAddress) {
+    if (
+      redirectURL &&
+      analyticsData.location !== "unavailable" &&
+      analyticsData.ipAddress !== "unavailable"
+    ) {
       pushAnalytics();
-      window.location.href = redirectURL;
+      if (isActive) {
+        window.location.href = redirectURL;
+      } else {
+        window.location.href = "/timeout";
+      }
     }
-  }, [redirectURL, analyticsData.longitude, analyticsData.ipAddress]);
+  }, [analyticsData.location, analyticsData.ipAddress]);
 
   // Fetch analytics data
   useEffect(() => {
-    // Set device type
+    // Set device info
     setAnalyticsData((prev) => ({
       ...prev,
-      deviceType: getDeviceName() || "unavailable",
-    }));
-
-    // Fetch geolocation
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setAnalyticsData((prev) => ({
-          ...prev,
-          longitude: position.coords.longitude,
-          latitude: position.coords.latitude,
-          accuracy: position.coords.accuracy,
-        }));
-      },
-      (error) => {
-        console.error("Error getting geolocation:", error);
-        setAnalyticsData((prev) => ({
-          ...prev,
-          longitude: error.message,
-          latitude: error.message,
-          accuracy: error.message,
-        }));
-      }
-    );
-
-    // Fetch IP
-    fetchIP();
-
-    // Set device-related info
-    setAnalyticsData((prev) => ({
-      ...prev,
+      deviceType: getDeviceName(),
       connectionType: navigator.connection?.effectiveType || "unavailable",
-      downloadSpeed: navigator.connection?.downlink || "unavailable",
+      downloadSpeed: navigator.connection?.downlink
+        ? `${navigator.connection.downlink}`
+        : "unavailable",
       deviceCores: navigator.hardwareConcurrency || "unavailable",
-      deviceRAM: navigator.deviceMemory || "unavailable",
-      browser: navigator.userAgent || "unavailable",
-      platform: navigator.platform || "unavailable",
-      language: navigator.language || "unavailable",
+      deviceRAM: navigator.deviceMemory
+        ? `${navigator.deviceMemory}`
+        : "unavailable",
+      browser: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
       onlineStatus: navigator.onLine ? "Online" : "Offline",
-      vendor: navigator.vendor || "unavailable",
-      screenWidth: screen.width || "unavailable",
-      screenHeight: screen.height || "unavailable",
-      availableScreenWidth: screen.availWidth || "unavailable",
-      availableScreenHeight: screen.availHeight || "unavailable",
-      colorDepth: screen.colorDepth || "unavailable",
-      devicePixelRatio: window.devicePixelRatio || "unavailable",
+      vendor: navigator.vendor,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      availableScreenWidth: window.screen.availWidth,
+      availableScreenHeight: window.screen.availHeight,
+      colorDepth: window.screen.colorDepth,
+      devicePixelRatio: window.devicePixelRatio,
     }));
 
-    // Fetch battery info
+    fetchIP();
     getBatteryInfo();
-
-    // Fetch time info
     getTimeInfo();
   }, []);
 
