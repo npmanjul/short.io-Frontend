@@ -8,6 +8,7 @@ import axios from "axios";
 import DoughnutChart from "./DoughnutChart.jsx";
 import BarChart from "./BarChart.jsx";
 import { StoreState } from "../context/Store.jsx";
+import { BACKEND_URL, FRONTEND_URL } from "../utilis/constants.js";
 
 const URLModal = ({ url, onClose }) => {
   const { urlAnalytics, fetchUrlAnalytics } = StoreState();
@@ -50,7 +51,7 @@ const URLModal = ({ url, onClose }) => {
 
   const fetchVisitAnalytics = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/analyticsvisit/${url.urlId}`
+      `${BACKEND_URL}/urlanalytics/analyticsvisit/${url.urlId}`
     );
 
     setVisitAnalytics(response.data);
@@ -58,7 +59,7 @@ const URLModal = ({ url, onClose }) => {
 
   const fetchLocationAnalytics = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/locationanalytics/${url.urlId}`
+      `${BACKEND_URL}/urlanalytics/locationanalytics/${url.urlId}`
     );
 
     setLocationAnalytics(response.data);
@@ -66,7 +67,7 @@ const URLModal = ({ url, onClose }) => {
 
   const fetchdeviceInfoAnalytics = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/deviceinfoanalytics/${url.urlId}`
+      `${BACKEND_URL}/urlanalytics/deviceinfoanalytics/${url.urlId}`
     );
 
     setDeviceInfoAnalytics(response.data);
@@ -74,7 +75,7 @@ const URLModal = ({ url, onClose }) => {
 
   const fetchnetworkInfoAnalytics = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/networkinfoanalytics/${url.urlId}`
+      `${BACKEND_URL}/urlanalytics/networkinfoanalytics/${url.urlId}`
     );
 
     setNetworkInfoAnalytics(response.data);
@@ -82,7 +83,7 @@ const URLModal = ({ url, onClose }) => {
 
   const fetchbatteryInfoAnalytics = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/batteryinfoanalytics/${url.urlId}`
+      `${BACKEND_URL}/urlanalytics/batteryinfoanalytics/${url.urlId}`
     );
 
     setBatteryInfoAnalytics(response.data);
@@ -244,18 +245,18 @@ const URLModal = ({ url, onClose }) => {
                       </svg>
                       <span className="text-blue-600 dark:text-blue-400 break-all">
                         <a
-                          href={`http://localhost:5173/redirect/${url.shortId}`}
+                          href={`${FRONTEND_URL}/redirect/${url.shortId}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {`http://localhost:5173/redirect/${url.shortId}`}
+                          {`${FRONTEND_URL}/redirect/${url.shortId}`}
                         </a>
                       </span>
                     </div>
                     <div
                       onClick={() =>
                         handleCopy({
-                          content: `http://localhost:5173/redirect/${url.shortId}`,
+                          content: `${FRONTEND_URL}/redirect/${url.shortId}`,
                         })
                       }
                       className="cursor-pointer"

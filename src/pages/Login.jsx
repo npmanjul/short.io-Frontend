@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import GoogleAuth from "../components/GoogleAuth.jsx";
 import Loader from "../components/Loader.jsx";
 import Navbar from "../components/Navbar.jsx";
+import { BACKEND_URL } from "../utilis/constants.js";
 
 const Login = () => {
   const [visible, setVisible] = useState(false);
@@ -26,10 +27,7 @@ const Login = () => {
     setLoader(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        formData
-      );
+      const response = await axios.post(`${BACKEND_URL}/user/login`, formData);
 
       if (response.status === 201) {
         localStorage.setItem("token", response.data.token);

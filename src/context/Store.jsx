@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { BACKEND_URL } from "../utilis/constants.js";
 
 const StoreContext = createContext();
 
@@ -16,7 +17,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchUrlAnalytics = async (url) => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/urlanalytics/urlanalytics/${url}`
+      `${BACKEND_URL}/urlanalytics/urlanalytics/${url}`
     );
 
     setUrlAnalytics(response.data);
@@ -24,7 +25,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchVisitData = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsvisit/${localStorage.getItem(
+      `${BACKEND_URL}/analytics/analyticsvisit/${localStorage.getItem(
         "userId"
       )}`
     );
@@ -34,9 +35,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchDeviceInfo = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsinfo/${localStorage.getItem(
-        "userId"
-      )}`
+      `${BACKEND_URL}/analytics/analyticsinfo/${localStorage.getItem("userId")}`
     );
 
     setDeviceInfo(response.data);
@@ -44,7 +43,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchDeviceBattery = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsBattery/${localStorage.getItem(
+      `${BACKEND_URL}/analytics/analyticsBattery/${localStorage.getItem(
         "userId"
       )}`
     );
@@ -54,7 +53,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchDeviceNetwork = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsnetwork/${localStorage.getItem(
+      `${BACKEND_URL}/analytics/analyticsnetwork/${localStorage.getItem(
         "userId"
       )}`
     );
@@ -64,7 +63,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchDeviceLocation = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticslocation/${localStorage.getItem(
+      `${BACKEND_URL}/analytics/analyticslocation/${localStorage.getItem(
         "userId"
       )}`
     );
@@ -74,7 +73,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchRecentActivity = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsrecentactivity/${localStorage.getItem(
+      `${BACKEND_URL}/analytics/analyticsrecentactivity/${localStorage.getItem(
         "userId"
       )}`
     );
@@ -84,9 +83,7 @@ const StoreProvider = ({ children }) => {
 
   const fetchUrl = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/analytics/analyticsurl/${localStorage.getItem(
-        "userId"
-      )}`
+      `${BACKEND_URL}/analytics/analyticsurl/${localStorage.getItem("userId")}`
     );
 
     setUrl(response.data);

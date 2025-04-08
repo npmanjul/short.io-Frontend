@@ -4,6 +4,7 @@ import { StoreState } from "../context/Store";
 import { NavLink, useNavigate } from "react-router-dom";
 import QRModal from "../components/QRModal";
 import toast from "react-hot-toast";
+import { FRONTEND_URL } from "../utilis/constants";
 
 const Url = () => {
   const { urlId } = StoreState();
@@ -13,7 +14,7 @@ const Url = () => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        `http://localhost:5173/redirect/${urlId}`
+        `${FRONTEND_URL}/redirect/${urlId}`
       );
       // toast.success("Copied");
       setCopied(true);
@@ -41,11 +42,11 @@ const Url = () => {
           {/* URL Display Box */}
           <div className="flex flex-col sm:flex-row gap-3 w-[450px]">
             <div className="w-full backdrop-blur-lg dark:bg-gray-800/50 text-white rounded-2xl px-4 py-3 text-sm md:text-base break-all">
-              {`http://localhost:5173/redirect/${urlId}`}
+              {`${FRONTEND_URL}/redirect/${urlId}`}
             </div>
 
             <a
-              href={`http://localhost:5173/redirect/${urlId}`}
+              href={`${FRONTEND_URL}/redirect/${urlId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-gradient-to-br from-violet-400 to-pink-500 dark:from-green-400 dark:to-green-600 transition-all duration-300 hover:scale-105 p-3 rounded-2xl flex items-center justify-center"

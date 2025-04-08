@@ -5,6 +5,7 @@ import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../utilis/constants";
 
 const GoogleAuth = () => {
   const navigate = useNavigate();
@@ -12,15 +13,12 @@ const GoogleAuth = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       if (result.user) {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/user/googleauth",
-          {
-            email: result.user.email,
-            name: result.user.displayName,
-            pic: result.user.photoURL,
-            uid: result.user.uid,
-          }
-        );
+        const response = await axios.post(`${BACKEND_URL}/user/googleauth`, {
+          email: result.user.email,
+          name: result.user.displayName,
+          pic: result.user.photoURL,
+          uid: result.user.uid,
+        });
 
         if (response.status === 201) {
           localStorage.setItem("token", response.data.token);

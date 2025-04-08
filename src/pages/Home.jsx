@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { StoreState } from "../context/Store.jsx";
 import Navbar from "../components/Navbar.jsx";
+import { BACKEND_URL } from "../utilis/constants.js";
 
 const Home = () => {
   const [url, setUrl] = useState("");
@@ -19,13 +20,10 @@ const Home = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/url/generate",
-        {
-          url: url,
-          userId: localStorage.getItem("userId"),
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/url/generate`, {
+        url: url,
+        userId: localStorage.getItem("userId"),
+      });
 
       if (localStorage.getItem("token")) {
         if (response.status === 201) {

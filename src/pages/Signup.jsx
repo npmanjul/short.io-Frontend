@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import GoogleAuth from "../components/GoogleAuth";
 import Loader from "../components/Loader";
+import { BACKEND_URL } from "../utilis/constants";
 
 const Signup = () => {
   const [visible, setVisible] = useState(false);
@@ -26,10 +27,7 @@ const Signup = () => {
     setLoader(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/signup",
-        formData
-      );
+      const response = await axios.post(`${BACKEND_URL}/user/signup`, formData);
       if (response.status === 201) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data._id);

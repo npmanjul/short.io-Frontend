@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
+import { FRONTEND_URL } from "../utilis/constants";
 
 const QRModal = ({ urlId, cssClass, title = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +15,7 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
   };
 
   const generateUrl = () => {
-    const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`http://localhost:5173/redirect/${urlId}`}`;
+    const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`${FRONTEND_URL}/redirect/${urlId}`}`;
     setQr(qr_code);
   };
 
@@ -35,7 +36,7 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
 
       const link = document.createElement("a");
       link.href = jpegDataUrl;
-      link.download = `QR_${`http://localhost:5173/redirect/${urlId}`}.jpg`;
+      link.download = `QR_${`${FRONTEND_URL}/redirect/${urlId}`}.jpg`;
 
       document.body.appendChild(link);
       link.click();

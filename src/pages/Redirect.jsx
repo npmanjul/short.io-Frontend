@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { StoreState } from "../context/Store";
+import { BACKEND_URL } from "../utilis/constants.js";
 
 const Redirect = () => {
   const [redirectURL, setRedirectURL] = useState("");
@@ -52,9 +53,7 @@ const Redirect = () => {
   // Function to fetch redirect URL
   const fetchRedirectUrl = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/url/${id}`
-      );
+      const response = await axios.get(`${BACKEND_URL}/url/${id}`);
       if (response.data?.redirectURL) {
         setRedirectURL(response.data.redirectURL);
         setIsActive(response.data.isActive);
@@ -147,7 +146,7 @@ const Redirect = () => {
   const pushAnalytics = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/api/v1/analytics/pushanalytics`,
+        `${BACKEND_URL}/analytics/pushanalytics`,
         analyticsData
       );
     } catch (error) {

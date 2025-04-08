@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import {FRONTEND_URL} from "../utilis/constants.js";
 
 const QRGenerator = ({ urlId }) => {
   const [qr, setQr] = useState("");
 
   useEffect(() => {
     if (urlId) {
-      const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`http://localhost:5173/redirect/${urlId}`}`;
+      const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`${FRONTEND_URL}/redirect/${urlId}`}`;
       setQr(qr_code);
     }
   }, [urlId]);

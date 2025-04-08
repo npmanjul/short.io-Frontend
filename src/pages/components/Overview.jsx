@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -13,6 +12,7 @@ import {
 } from "chart.js";
 import { StoreState } from "../../context/Store";
 import LineChart from "../../components/LineChart";
+import { BACKEND_URL, FRONTEND_URL } from "../../utilis/constants";
 
 // Register required components
 ChartJS.register(
@@ -66,7 +66,7 @@ const Overview = () => {
   useEffect(() => {
     const fetchOverviewData = async () => {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/analytics/analyticsoverview/${localStorage.getItem(
+        `${BACKEND_URL}/analytics/analyticsoverview/${localStorage.getItem(
           "userId"
         )}`
       );
@@ -239,7 +239,7 @@ const Overview = () => {
                 </div>
                 <span className="text-sm text-gray-500 ">
                   <a
-                    href={`http://localhost:5173/redirect/${item.shortId}`}
+                    href={`${FRONTEND_URL}/redirect/${item.shortId}`}
                     className="text-blue-500 hover:underline"
                     target="_blank"
                   >

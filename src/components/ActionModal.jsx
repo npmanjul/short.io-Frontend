@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { StoreState } from "../context/Store";
+import { BACKEND_URL } from "../utilis/constants.js";
 
 const ActionModal = ({ url, onClose }) => {
   const { urlAnalytics, fetchUrlAnalytics } = StoreState();
@@ -16,15 +17,12 @@ const ActionModal = ({ url, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/url/urlexpiry",
-        {
-          isActive: isChecked,
-          expiryDate: date,
-          expiryTime: time,
-          urlId: url.urlId,
-        }
-      );
+      const response = await axios.post(`${BACKEND_URL}/url/urlexpiry`, {
+        isActive: isChecked,
+        expiryDate: date,
+        expiryTime: time,
+        urlId: url.urlId,
+      });
 
       if (response.status === 201) {
         toast.success("Updated successfully");

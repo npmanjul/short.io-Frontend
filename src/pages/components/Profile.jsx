@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../../utilis/constants";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
@@ -14,7 +15,7 @@ const Profile = () => {
   const getUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/analytics/analyticsprofile/${localStorage.getItem(
+        `${BACKEND_URL}/analytics/analyticsprofile/${localStorage.getItem(
           "userId"
         )}`
       );

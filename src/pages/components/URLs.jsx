@@ -3,6 +3,7 @@ import { StoreState } from "../../context/Store";
 import QRModal from "../../components/QRModal";
 import URLModal from "../../components/URLModal";
 import ActionModal from "../../components/ActionModal";
+import { FRONTEND_URL } from "../../utilis/constants";
 
 const URLs = () => {
   const { url, fetchUrl } = StoreState();
@@ -113,12 +114,12 @@ const URLs = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                       <a
-                        href={`http://localhost:5173/redirect/${item.shortId}`}
+                        href={`${FRONTEND_URL}/redirect/${item.shortId}`}
                         className="text-blue-500 hover:underline"
                         target="_blank"
                       >
                         <LimitWords
-                          text={`http://localhost:5173/redirect/${item.shortId}`}
+                          text={`${FRONTEND_URL}/redirect/${item.shortId}`}
                           wordLimit={20}
                         />
                       </a>
