@@ -13,9 +13,7 @@ const Url = () => {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(
-        `${FRONTEND_URL}/redirect/${urlId}`
-      );
+      await navigator.clipboard.writeText(`${FRONTEND_URL}/redirect/${urlId}`);
       // toast.success("Copied");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -31,7 +29,7 @@ const Url = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-gray-600 dark:via-slate-800 dark:to-zinc-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-600 via-slate-800 to-zinc-900">
       <Navbar />
       <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-64px)]">
         <div className="bg-white/20 backdrop-blur-lg px-7 py-7 flex flex-col justify-center items-center gap-4 shadow-2xl rounded-3xl border border-gray-700/50">
@@ -41,7 +39,7 @@ const Url = () => {
 
           {/* URL Display Box */}
           <div className="flex flex-col sm:flex-row gap-3 w-[450px]">
-            <div className="w-full backdrop-blur-lg dark:bg-gray-800/50 text-white rounded-2xl px-4 py-3 text-sm md:text-base break-all">
+            <div className="w-full backdrop-blur-lg bg-gray-800/50 text-white rounded-2xl px-4 py-3 text-sm md:text-base overflow-x-hidden whitespace-nowrap h-[50px]">
               {`${FRONTEND_URL}/redirect/${urlId}`}
             </div>
 
@@ -49,7 +47,7 @@ const Url = () => {
               href={`${FRONTEND_URL}/redirect/${urlId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gradient-to-br from-violet-400 to-pink-500 dark:from-green-400 dark:to-green-600 transition-all duration-300 hover:scale-105 p-3 rounded-2xl flex items-center justify-center"
+              className="bg-gradient-to-br from-green-400 to-green-600 transition-all duration-300 hover:scale-105 p-3 rounded-2xl flex items-center justify-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +64,7 @@ const Url = () => {
           {/* Copy Button */}
           <button
             onClick={handleCopy}
-            className="w-full bg-indigo-600 bg-gradient-to-br dark:from-green-500 dark:to-green-700 transition-all duration-300 p-4 rounded-2xl text-white flex justify-center items-center gap-2 font-medium"
+            className="w-full bg-gradient-to-br from-green-500 to-green-700 transition-all duration-300 p-4 rounded-2xl text-white flex justify-center items-center gap-2 font-medium"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +84,7 @@ const Url = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             <NavLink
               to="/"
-              className="bg-gradient-to-br from-purple-600 to-purple-800 dark:from-green-600 dark:to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
+              className="bg-gradient-to-br from-green-600 to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -103,13 +101,13 @@ const Url = () => {
 
             <QRModal
               urlId={urlId}
-              cssClass="bg-gradient-to-br from-purple-600 to-purple-800 dark:from-green-600 dark:to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
+              cssClass="bg-gradient-to-br from-green-600 to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
               title="QR Code"
             />
 
             <NavLink
               to="/dashboard"
-              className="bg-gradient-to-br from-purple-600 to-purple-800 dark:from-green-600 dark:to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
+              className="bg-gradient-to-br from-green-600 to-green-800 transition-all duration-300  p-4 rounded-2xl flex flex-col items-center justify-center gap-2 group"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

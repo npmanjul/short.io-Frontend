@@ -56,7 +56,7 @@ const Navbar = () => {
               </>
             )}
 
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </div>
         </div>
       </div>

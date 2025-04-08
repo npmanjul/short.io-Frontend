@@ -76,9 +76,12 @@ const Redirect = () => {
   const fetchIP = async () => {
     try {
       const response = await axios.get("https://ipinfo.io/json");
+      console.log(response.data);
       const ipInfo = await axios.get(
-        `${BACKEND_URL}/ip?ip=${response.data.ip}`
+        `${BACKEND_URL}/analytics/ip?ip=${response.data.ip}`
       );
+
+      console.log(response.data);
 
       setAnalyticsData((prev) => ({
         ...prev,
