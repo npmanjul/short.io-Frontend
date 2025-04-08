@@ -61,7 +61,7 @@ const Home = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500  dark:from-gray-600 dark:via-slate-800 dark:to-zinc-900 flex items-center justify-center p-4">
+      <div className="min-h-screen w-full bg-gradient-to-br from-gray-600 via-slate-800 to-zinc-900 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl mx-auto">
           <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 shadow">
             <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-8">
@@ -71,7 +71,7 @@ const Home = () => {
               <div className="relative w-full">
                 <input
                   type="text"
-                  className="w-full h-14  rounded-xl dark:bg-white/5  border dark:border-white/10 border-gray-300 text-white text-lg px-16 py-4 focus:outline-none   transition-all duration-300 placeholder-white/50 "
+                  className="w-full h-14  rounded-xl bg-white/5  border border-white/10  text-white text-lg px-16 py-4 focus:outline-none   transition-all duration-300 placeholder-white/50 "
                   placeholder="Enter your long URL here"
                   name="url"
                   value={url}
@@ -95,7 +95,7 @@ const Home = () => {
               <button
                 onClick={generateUrl}
                 disabled={isLoading}
-                className="w-full sm:w-[200px] bg-gradient-to-br from-blue-500 to-blue-700 dark:from-green-500 dark:to-green-800 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full sm:w-[200px] bg-gradient-to-br from-green-500 to-green-800 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>

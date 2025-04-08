@@ -77,7 +77,7 @@ const Redirect = () => {
     try {
       const response = await axios.get("https://ipinfo.io/json");
       const ipInfo = await axios.get(
-        `http://ip-api.com/json/${response.data.ip}?fields=status,message,country,region,city,zip,currency,isp,org,as,asname,reverse,proxy,hosting,lat,lon`
+        `${BACKEND_URL}/ip?ip=${response.data.ip}`
       );
 
       setAnalyticsData((prev) => ({
@@ -145,10 +145,7 @@ const Redirect = () => {
   // Function to push analytics data
   const pushAnalytics = async () => {
     try {
-      await axios.post(
-        `${BACKEND_URL}/analytics/pushanalytics`,
-        analyticsData
-      );
+      await axios.post(`${BACKEND_URL}/analytics/pushanalytics`, analyticsData);
     } catch (error) {
       console.error("Error pushing analytics:", error);
     }
