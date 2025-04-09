@@ -65,10 +65,14 @@ const Redirect = () => {
 
   // Function to determine device type
   const getDeviceName = () => {
-    const userAgent = navigator.userAgent;
-    if (/Windows|Mac|Linux/.test(userAgent)) return "Desktop";
-    if (/Android/.test(userAgent)) return "Android Device";
-    if (/iPad|iPhone|iPod/.test(userAgent)) return "iOS Device";
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (/iPad|iPhone|iPod/.test(userAgent)) return "iOS";
+    if (/Android/.test(userAgent)) return "Android";
+    if (/Windows/.test(userAgent)) return "Windows PC";
+    if (/Macintosh/.test(userAgent)) return "Mac";
+    if (/Linux/.test(userAgent)) return "Linux PC";
+
     return "Unknown Device";
   };
 

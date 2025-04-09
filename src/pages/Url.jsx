@@ -22,23 +22,23 @@ const Url = () => {
     }
   };
 
-  useEffect(() => {
-    if (!urlId) {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!urlId) {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-600 via-slate-800 to-zinc-900">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[calc(100vh-64px)]">
-        <div className="bg-white/20 backdrop-blur-lg px-7 py-7 flex flex-col justify-center items-center gap-4 shadow-2xl rounded-3xl border border-gray-700/50">
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[100vh]">
+        <div className="bg-white/20 backdrop-blur-lg w-full p-5 sm:px-7 sm:py-7 flex flex-col justify-center items-center gap-4 shadow-2xl rounded-3xl border border-gray-700/50">
           <h1 className="text-2xl font-bold text-white text-center mb-4">
             Your Shortened URL
           </h1>
 
           {/* URL Display Box */}
-          <div className="flex flex-col sm:flex-row gap-3 w-[450px]">
+          <div className="flex flex-row gap-3 w-full sm:w-[450px]">
             <div className="w-full backdrop-blur-lg bg-gray-800/50 text-white rounded-2xl px-4 py-3 text-sm md:text-base overflow-x-hidden whitespace-nowrap h-[50px]">
               {`${FRONTEND_URL}/redirect/${urlId}`}
             </div>

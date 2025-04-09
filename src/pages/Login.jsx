@@ -49,7 +49,7 @@ const Login = () => {
       <Navbar />
       <div className="pt-18 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black flex justify-center items-center h-[100vh] w-full">
         <div className="flex justify-center items-center w-[50%]">
-          <div className="flex justify-center items-center flex-col max-w-[450px]  border-2  border-gray-400 p-9 rounded-2xl">
+          <div className="flex justify-center items-center flex-col max-w-[350px]  sm:max-w-[450px]  border-2  border-gray-400 p-9 rounded-2xl">
             <h1 className="text-white text-5xl font-bold pb-7">Login</h1>
             <form
               onSubmit={handleSubmit}
@@ -149,7 +149,7 @@ const Login = () => {
             <GoogleAuth />
           </div>
         </div>
-        <div>
+        <div className="hidden lg:block">
           <img src="/public/login.png" className="h-[600px] w-[600px]" />
         </div>
       </div>
