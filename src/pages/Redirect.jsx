@@ -212,10 +212,10 @@ const Redirect = () => {
   }, []);
 
   return (
-    <div className="pt-9 pl-9">
+    <div className="w-full h-[100vh] flex justify-center items-center">
       <Loader
-        height={"h-[100px]"}
-        width={"w-[100px]"}
+        height={"h-[70px]"}
+        width={"w-[70px]"}
         color={"text-gray-300"}
         bgColor={"fill-red-600"}
       />
