@@ -211,16 +211,16 @@ const Redirect = () => {
     getTimeInfo();
   }, []);
 
-  return (
-    <div className="w-full h-[100vh] flex justify-center items-center">
-      <Loader
-        height={"h-[70px]"}
-        width={"w-[70px]"}
-        color={"text-gray-300"}
-        bgColor={"fill-red-600"}
-      />
-    </div>
-  );
+  // return (
+  //   <div className="w-full h-[100vh] flex justify-center items-center">
+  //     <Loader
+  //       height={"h-[70px]"}
+  //       width={"w-[70px]"}
+  //       color={"text-gray-300"}
+  //       bgColor={"fill-red-600"}
+  //     />
+  //   </div>
+  // );
 };
 
 export default Redirect;
