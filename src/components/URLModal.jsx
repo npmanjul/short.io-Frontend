@@ -7,11 +7,11 @@ import LineChart from "./LineChart";
 import axios from "axios";
 import DoughnutChart from "./DoughnutChart.jsx";
 import BarChart from "./BarChart.jsx";
-import { StoreState } from "../context/Store.jsx";
 import { BACKEND_URL, FRONTEND_URL } from "../utilis/constants.js";
+import useStore from "../store.js";
 
 const URLModal = ({ url, onClose }) => {
-  const { urlAnalytics, fetchUrlAnalytics } = StoreState();
+  const { urlAnalytics, fetchUrlAnalytics } = useStore();
   const [isLoading, setIsLoading] = useState(true);
   const [visitAnalytics, setVisitAnalytics] = useState([]);
   const [locationAnalytics, setLocationAnalytics] = useState([]);
@@ -258,18 +258,18 @@ const URLModal = ({ url, onClose }) => {
                         </svg>
                         <span className="text-blue-600 dark:text-blue-400 break-all">
                           <a
-                            href={`${FRONTEND_URL}/redirect/${url.shortId}`}
+                            href={`${FRONTEND_URL}/link/${url.shortId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {`${FRONTEND_URL}/redirect/${url.shortId}`}
+                            {`${FRONTEND_URL}/link/${url.shortId}`}
                           </a>
                         </span>
                       </div>
                       <div
                         onClick={() =>
                           handleCopy({
-                            content: `${FRONTEND_URL}/redirect/${url.shortId}`,
+                            content: `${FRONTEND_URL}/${url.shortId}`,
                           })
                         }
                         className="cursor-pointer"

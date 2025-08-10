@@ -1,4 +1,4 @@
-import React, { Profiler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Overview from "./components/Overview";
 import URLs from "./components/URLs";
 import Analytics from "./components/Analytics";
@@ -6,12 +6,14 @@ import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-1;
+import useStore from "../store";
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(localStorage.getItem("tab"));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { setUrl } = useStore();
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -290,7 +292,12 @@ const Dashboard = () => {
             </div>
             <div className="mt-4 sm:mt-0 w-full sm:w-auto">
               <NavLink to="/" className="w-full sm:w-auto">
-                <button className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-white bg-black rounded-lg cursor-pointer hover:bg-gray-800 transition-colors duration-200">
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-white bg-black rounded-lg cursor-pointer hover:bg-gray-800 transition-colors duration-200"
+                  onClick={() => {
+                    setUrl("");
+                  }}
+                >
                   <span>Generate New URL</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

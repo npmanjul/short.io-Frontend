@@ -10,13 +10,12 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { StoreState } from "../../context/Store";
 import DoughnutChart from "../../components/DoughnutChart";
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import PieChart from "../../components/PieChart";
-import { Bar } from "react-chartjs-2";
 import Loader from "../../components/Loader";
+import useStore from "../../store";
 
 // Register ChartJS components
 ChartJS.register(
@@ -33,16 +32,17 @@ ChartJS.register(
 const Analytics = () => {
   const {
     visitData,
-    fetchVisitData,
     deviceInfo,
-    fetchDeviceInfo,
     deviceBattery,
-    fetchDeviceBattery,
     deviceNetwork,
-    fetchDeviceNetwork,
     deviceLocation,
+    fetchVisitData,
+    fetchDeviceInfo,
+    fetchDeviceBattery,
+    fetchDeviceNetwork,
     fetchDeviceLocation,
-  } = StoreState();
+  } = useStore();
+
   const [isLoading, setIsLoading] = useState(true);
 
   const generateRandomColors = (size) => {

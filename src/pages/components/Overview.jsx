@@ -10,10 +10,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { StoreState } from "../../context/Store";
 import LineChart from "../../components/LineChart";
 import { BACKEND_URL, FRONTEND_URL } from "../../utilis/constants";
 import Loader from "../../components/Loader";
+import useStore from "../../store";
 
 // Register required components
 ChartJS.register(
@@ -29,7 +29,7 @@ ChartJS.register(
 const Overview = () => {
   const [overviewData, setOverviewData] = useState([]);
   const { visitData, fetchVisitData, recentActivity, fetchRecentActivity } =
-    StoreState();
+    useStore();
   const [isLoading, setIsLoading] = useState(true);
 
   const LimitWords = ({ text = "", wordLimit }) => {
@@ -262,12 +262,12 @@ const Overview = () => {
                     </div>
                     <span className="text-sm text-gray-500 w-[100px] sm:w-auto overflow-hidden whitespace-nowrap">
                       <a
-                        href={`${FRONTEND_URL}/redirect/${item.shortId}`}
+                        href={`${FRONTEND_URL}/link/${item.shortId}`}
                         className="text-blue-500 hover:underline"
                         target="_blank"
                       >
                         <LimitWords
-                          text={`${FRONTEND_URL}/redirect/${item.shortId}`}
+                          text={`${FRONTEND_URL}/link/${item.shortId}`}
                           wordLimit={20}
                         />
                       </a>

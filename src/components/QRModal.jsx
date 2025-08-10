@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { FRONTEND_URL } from "../utilis/constants";
 
-const QRModal = ({ urlId, cssClass, title = "" }) => {
+const QRModal = ({ urlId, cssClass, title = "", overlayCss }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loader, setLoader] = useState(true);
   const [qr, setQr] = useState("");
@@ -15,7 +15,7 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
   };
 
   const generateUrl = () => {
-    const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`${FRONTEND_URL}/redirect/${urlId}`}`;
+    const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${`${FRONTEND_URL}/link/${urlId}`}`;
     setQr(qr_code);
   };
 
@@ -36,8 +36,7 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
 
       const link = document.createElement("a");
       link.href = jpegDataUrl;
-      link.download = `QR_${`${FRONTEND_URL}/redirect/${urlId}`}.jpg`;
-
+      link.download = `QR_${`${FRONTEND_URL}/link/${urlId}`}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -56,32 +55,34 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
           height="32px"
           viewBox="0 -960 960 960"
           width="32px"
-          fill="#FFFFFF"
+          fill="#000000"
           className="group-hover:scale-110 transition-transform"
         >
           <path d="M520-120v-80h80v80h-80Zm-80-80v-200h80v200h-80Zm320-120v-160h80v160h-80Zm-80-160v-80h80v80h-80Zm-480 80v-80h80v80h-80Zm-80-80v-80h80v80h-80Zm360-280v-80h80v80h-80ZM180-660h120v-120H180v120Zm-60 60v-240h240v240H120Zm60 420h120v-120H180v120Zm-60 60v-240h240v240H120Zm540-540h120v-120H660v120Zm-60 60v-240h240v240H600Zm80 480v-120h-80v-80h160v120h80v80H680ZM520-400v-80h160v80H520Zm-160 0v-80h-80v-80h240v80h-80v80h-80Zm40-200v-160h80v80h80v80H400Zm-190-90v-60h60v60h-60Zm0 480v-60h60v60h-60Zm480-480v-60h60v60h-60Z" />
         </svg>
-        <span className="text-white font-medium text-sm">{title}</span>
+        <span className="text-black font-medium text-sm">{title}</span>
       </button>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm transition-opacity w-full"
+          className={`fixed inset-0 z-50 flex items-center justify-center  ${
+            overlayCss ? overlayCss : "bg-black/75 backdrop-blur-sm"
+          } transition-opacity w-full`}
           role="dialog"
           aria-labelledby="modal-title"
           onClick={toggleModal}
         >
           <div
-            className="bg-gray-900/90 backdrop-blur-sm border border-gray-700/50 rounded-3xl shadow-2xl w-full max-w-[400px] mx-4 transform transition-all"
+            className="bg-gray-100 rounded-3xl shadow-2xl w-full max-w-[400px] mx-4 transform transition-all"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center py-4 px-6 border-b border-gray-700/50">
-              <h3 id="modal-title" className="font-bold text-xl text-white">
+            <div className="flex justify-between items-center py-4 px-6 border-b ">
+              <h3 id="modal-title" className="font-bold text-xl text-black">
                 QR Code
               </h3>
               <button
                 type="button"
-                className="size-8 inline-flex justify-center items-center rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none"
+                className="size-8 inline-flex justify-center items-center rounded-full bg-gray-300 text-black hover:bg-gray-300 transition-colors focus:outline-none"
                 onClick={toggleModal}
               >
                 <span className="sr-only">Close</span>
@@ -106,38 +107,44 @@ const QRModal = ({ urlId, cssClass, title = "" }) => {
                   height={"h-8"}
                   width={"w-8"}
                   color={"text-white"}
-                  bgColor={"fill-blue-600"}
+                  bgColor={"fill-blue-700"}
                 />
               </div>
 
               <div
                 className={`${
                   !loader ? "block" : "hidden"
-                } bg-white p-4 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl`}
+                } flex justify-center items-center flex-col gap-4`}
               >
-                <img
-                  src={qr}
-                  alt="QR Code"
-                  className="rounded-xl w-full max-w-[250px] h-auto"
-                />
-              </div>
-
-              <button
-                onClick={downloadQR}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors p-4 rounded-2xl text-white font-medium flex justify-center items-center gap-2 group"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20px"
-                  viewBox="0 -960 960 960"
-                  width="20px"
-                  fill="#FFFFFF"
-                  className="group-hover:scale-110 transition-transform"
+                <div
+                  className={
+                    " bg-white p-4 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl"
+                  }
                 >
-                  <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-                </svg>
-                <span>Download QR Code</span>
-              </button>
+                  <img
+                    src={qr}
+                    alt="QR Code"
+                    className="rounded-xl w-full max-w-[250px] h-auto"
+                  />
+                </div>
+
+                <button
+                  onClick={downloadQR}
+                  className="w-full bg-blue-600 hover:bg-blue-700 transition-colors p-4 rounded-2xl text-white font-medium flex justify-center items-center gap-2 group"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20px"
+                    viewBox="0 -960 960 960"
+                    width="20px"
+                    fill="#FFFFFF"
+                    className="group-hover:scale-110 transition-transform"
+                  >
+                    <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
+                  </svg>
+                  <span>Download QR Code</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

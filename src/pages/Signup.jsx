@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import GoogleAuth from "../components/GoogleAuth";
 import Loader from "../components/Loader";
@@ -31,8 +31,7 @@ const Signup = () => {
       if (response.status === 201) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data._id);
-
-        navigate("/url");
+        navigate("/");
         toast.success("Signup successful");
         setLoader(false);
       } else {
@@ -44,27 +43,32 @@ const Signup = () => {
       setLoader(false);
     }
   };
+
   return (
     <>
       <Navbar />
-      <div className="pt-18 h-[100vh] flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+      <div className="pt-18 min-h-screen flex justify-center items-center bg-white">
         <div className="hidden lg:block">
-          <img src="/public/signup.png" className="h-[600px] w-[600px]" />
+          <img
+            src="/public/signup.png"
+            className="h-[500px] w-[500px] object-contain"
+            alt="signup"
+          />
         </div>
         <div className="lg:w-[50%] flex justify-center items-center">
-          <div className="flex justify-center items-center flex-col max-w-[350px] sm:max-w-[450px] border-2 border-gray-400 p-9 rounded-2xl">
-            <h1 className="text-white text-5xl font-bold pb-7">Signup</h1>
+          <div className="flex justify-center items-center flex-col max-w-[350px] sm:max-w-[450px] border border-gray-200 bg-white p-9 rounded-2xl shadow-md">
+            <h1 className="text-zinc-900 text-4xl font-bold pb-7">Signup</h1>
             <form
               onSubmit={handleSubmit}
-              className="flex justify-start items-center flex-col  rounded-lg text-[16px] w-full"
+              className="flex justify-start items-center flex-col rounded-lg text-[16px] w-full"
             >
-              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium relative">
-                Name :
+              <label className="w-full flex items-start flex-col text-zinc-700 font-medium relative">
+                Name:
                 <input
                   type="text"
                   name="name"
                   placeholder="Enter your Name"
-                  className="w-full px-11 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-black dark:text-white"
+                  className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   onChange={handleChange}
                   value={formData.name}
                 />
@@ -74,20 +78,20 @@ const Signup = () => {
                     height="24px"
                     viewBox="0 -960 960 960"
                     width="24px"
-                    fill="#e3e3e3"
+                    fill="#bdbdbd"
                   >
                     <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
                   </svg>
                 </div>
               </label>
 
-              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium mt-3 relative">
-                Email :
+              <label className="w-full flex items-start flex-col text-zinc-700 font-medium mt-3 relative">
+                Email:
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your Email"
-                  className="w-full px-11 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-black dark:text-white"
+                  className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -97,32 +101,32 @@ const Signup = () => {
                     height="24px"
                     viewBox="0 -960 960 960"
                     width="24px"
-                    fill="#e3e3e3"
+                    fill="#bdbdbd"
                   >
                     <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
                   </svg>
                 </div>
               </label>
 
-              <label className="w-full flex  items-start flex-col text-gray-300 dark:text-gray-300 font-medium mt-3 relative">
+              <label className="w-full flex items-start flex-col text-zinc-700 font-medium mt-3 relative">
                 Password:
                 <input
                   type={visible ? "text" : "password"}
                   name="password"
                   placeholder="Enter your password"
-                  className="w-full px-11 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-black dark:text-white"
+                  className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   onChange={handleChange}
                   value={formData.password}
                 />
                 <div className="absolute top-[38px] left-[12px]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill="#e3e3e3"
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    fill="rgba(173,184,194,1)"
                   >
-                    <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z" />
+                    <path d="M19 10H20C20.5523 10 21 10.4477 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 10.4477 3.44772 10 4 10H5V9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9V10ZM17 10V9C17 6.23858 14.7614 4 12 4C9.23858 4 7 6.23858 7 9V10H17ZM11 14V18H13V14H11Z"></path>
                   </svg>
                 </div>
                 <div
@@ -133,24 +137,24 @@ const Signup = () => {
                     <div>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        height="24px"
-                        viewBox="0 -960 960 960"
-                        width="24px"
-                        fill="#e3e3e3"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="rgba(173,184,194,1)"
                       >
-                        <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+                        <path d="M12.0003 3C17.3924 3 21.8784 6.87976 22.8189 12C21.8784 17.1202 17.3924 21 12.0003 21C6.60812 21 2.12215 17.1202 1.18164 12C2.12215 6.87976 6.60812 3 12.0003 3ZM12.0003 19C16.2359 19 19.8603 16.052 20.7777 12C19.8603 7.94803 16.2359 5 12.0003 5C7.7646 5 4.14022 7.94803 3.22278 12C4.14022 16.052 7.7646 19 12.0003 19ZM12.0003 16.5C9.51498 16.5 7.50026 14.4853 7.50026 12C7.50026 9.51472 9.51498 7.5 12.0003 7.5C14.4855 7.5 16.5003 9.51472 16.5003 12C16.5003 14.4853 14.4855 16.5 12.0003 16.5ZM12.0003 14.5C13.381 14.5 14.5003 13.3807 14.5003 12C14.5003 10.6193 13.381 9.5 12.0003 9.5C10.6196 9.5 9.50026 10.6193 9.50026 12C9.50026 13.3807 10.6196 14.5 12.0003 14.5Z"></path>
                       </svg>
                     </div>
                   ) : (
                     <div>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        height="24px"
-                        viewBox="0 -960 960 960"
-                        width="24px"
-                        fill="#e3e3e3"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="rgba(173,184,194,1)"
                       >
-                        <path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z" />
+                        <path d="M17.8827 19.2968C16.1814 20.3755 14.1638 21.0002 12.0003 21.0002C6.60812 21.0002 2.12215 17.1204 1.18164 12.0002C1.61832 9.62282 2.81932 7.5129 4.52047 5.93457L1.39366 2.80777L2.80788 1.39355L22.6069 21.1925L21.1927 22.6068L17.8827 19.2968ZM5.9356 7.3497C4.60673 8.56015 3.6378 10.1672 3.22278 12.0002C4.14022 16.0521 7.7646 19.0002 12.0003 19.0002C13.5997 19.0002 15.112 18.5798 16.4243 17.8384L14.396 15.8101C13.7023 16.2472 12.8808 16.5002 12.0003 16.5002C9.51498 16.5002 7.50026 14.4854 7.50026 12.0002C7.50026 11.1196 7.75317 10.2981 8.19031 9.60442L5.9356 7.3497ZM12.9139 14.328L9.67246 11.0866C9.5613 11.3696 9.50026 11.6777 9.50026 12.0002C9.50026 13.3809 10.6196 14.5002 12.0003 14.5002C12.3227 14.5002 12.6309 14.4391 12.9139 14.328ZM20.8068 16.5925L19.376 15.1617C20.0319 14.2268 20.5154 13.1586 20.7777 12.0002C19.8603 7.94818 16.2359 5.00016 12.0003 5.00016C11.1544 5.00016 10.3329 5.11773 9.55249 5.33818L7.97446 3.76015C9.22127 3.26959 10.5793 3.00016 12.0003 3.00016C17.3924 3.00016 21.8784 6.87992 22.8189 12.0002C22.5067 13.6998 21.8038 15.2628 20.8068 16.5925ZM11.7229 7.50857C11.8146 7.50299 11.9071 7.50016 12.0003 7.50016C14.4855 7.50016 16.5003 9.51488 16.5003 12.0002C16.5003 12.0933 16.4974 12.1858 16.4919 12.2775L11.7229 7.50857Z"></path>
                       </svg>
                     </div>
                   )}

@@ -7,18 +7,20 @@ import Url from "./pages/Url";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup";
 import TimeOut from "./pages/TimeOut.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/redirect/:id" element={<Redirect />} />
+        <Route path="/link/:id" element={<Redirect />} />
         <Route path="/url" element={<Url />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/timeout" element={<TimeOut />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
