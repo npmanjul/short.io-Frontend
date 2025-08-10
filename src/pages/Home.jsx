@@ -12,7 +12,7 @@ const Home = () => {
   const { setUrlId, url, setUrl } = useStore();
 
   const generateUrl = async () => {
-    if (!url.trim()) {
+    if (!url.name.trim()) {
       toast.error("Please enter a valid URL");
       return;
     }
@@ -20,7 +20,7 @@ const Home = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(`${BACKEND_URL}/url/generate`, {
-        url: url,
+        url: url.name,
         userId: localStorage.getItem("userId"),
       });
 
@@ -29,12 +29,13 @@ const Home = () => {
           setUrlId(response.data.shortId);
           navigate("/url");
           toast.success("URL Generated Successfully!");
+          setUrl("");
         }
       } else {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.response.status === 404) {
         navigate("/login");
       } else {
@@ -73,8 +74,8 @@ const Home = () => {
                   className="w-full h-14  rounded-xl bg-white/5  border border-black/40  text-zinc-700 text-lg px-16 py-4 focus:outline-none   transition-all duration-300 placeholder-zinc-600 "
                   placeholder="Enter your long URL here"
                   name="url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
+                  value={url.name || ""}
+                  onChange={(e) => setUrl({ ...url, name: e.target.value })}
                   required
                 />
                 <div className="absolute left-6 top-1/2 -translate-y-1/2">
