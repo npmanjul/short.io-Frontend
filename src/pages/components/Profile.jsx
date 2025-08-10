@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../../utilis/constants";
+import Loader from "../../components/Loader";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
@@ -11,28 +12,72 @@ const Profile = () => {
     confirmPassword: "",
     pic: "",
   });
+  const [loading, setLoading] = useState(true);
+
+  function getMemberSince(isoDate) {
+    const date = new Date(isoDate);
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const month = monthNames[date.getUTCMonth()];
+    const year = date.getUTCFullYear();
+
+    return `Member since ${month} ${year}`;
+  }
 
   const getUser = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `${BACKEND_URL}/analytics/analyticsprofile/${localStorage.getItem(
           "userId"
         )}`
       );
-      setUserData(response.data.user);
-      setFormData({
-        name: response.data.user.name,
-        email: response.data.user.email,
-        pic: response.data.user.pic,
-      });
+
+      console.log("User Data:", response.data.user.createdAt);
+      if (response.status === 200) {
+        setUserData(response.data.user);
+        setFormData({
+          name: response.data.user.name,
+          email: response.data.user.email,
+          pic: response.data.user.pic,
+        });
+      }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getUser();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[50vh]">
+        <Loader
+          height={"h-10"}
+          width={"w-10"}
+          color={"text-white"}
+          bgColor={"fill-black"}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -42,21 +87,11 @@ const Profile = () => {
           {/* Avatar */}
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-              {/* <svg
-                className="w-12 h-12 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg> */}
               <img
-                src="https://lh3.googleusercontent.com/a/ACg8ocJVPq5hPf64Itbr9atoteXIGGSrjQ6oqd8KT12rP_6XBGDyFA=s96-c"
+                src={
+                  userData.pic ||
+                  "https://lh3.googleusercontent.com/a/ACg8ocJVPq5hPf64Itbr9atoteXIGGSrjQ6oqd8KT12rP_6XBGDyFA=s96-c"
+                }
                 alt="user"
                 className="rounded-full object-cover"
               />
@@ -90,12 +125,14 @@ const Profile = () => {
               {userData.name}
             </h2>
             <p className="text-gray-600">{userData.email}</p>
-            <p className="text-sm text-gray-500">Member since January 2024</p>
+            <p className="text-sm text-gray-500">
+              {getMemberSince(userData.createdAt)}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Profile Settings */}
+      {/* Profile Settings Section */}
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold mb-4 text-gray-800">
           Profile Settings
@@ -130,83 +167,54 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          {/* Password Change */}
-          <div>
-            <h4 className="text-sm font-medium mb-4 text-gray-700">
-              Change Password
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Notification Preferences */}
-          <div>
-            <h4 className="text-sm font-medium mb-4 text-gray-700">
-              Notification Preferences
-            </h4>
-            <div className="space-y-3">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2 text-sm text-gray-700">
-                  Email notifications for new URLs
-                </span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2 text-sm text-gray-700">
-                  Weekly analytics reports
-                </span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2 text-sm text-gray-700">
-                  Account security alerts
-                </span>
-              </label>
-            </div>
-          </div>
-
-          {/* Save Button */}
+          {/* Save Button for Profile */}
           <div className="flex justify-end">
             <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              Save Changes
+              Save Profile
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Password Settings Section */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4 text-gray-800">
+          Change Password
+        </h3>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                Current Password
+              </label>
+              <input
+                type="password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                New Password
+              </label>
+              <input
+                type="password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          {/* Save Button for Password */}
+          <div className="flex justify-end">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              Change Password
             </button>
           </div>
         </div>
