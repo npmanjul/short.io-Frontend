@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { auth, googleProvider } from "../utilis/firebaseConfig.js";
 import axios from "axios";
-import { signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utilis/constants";
