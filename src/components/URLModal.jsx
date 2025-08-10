@@ -18,6 +18,8 @@ const URLModal = ({ url, onClose }) => {
   const [deviceInfoAnalytics, setDeviceInfoAnalytics] = useState([]);
   const [networkInfoAnalytics, setNetworkInfoAnalytics] = useState([]);
   const [batteryInfoAnalytics, setBatteryInfoAnalytics] = useState([]);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
 
   const generateRandomColors = (size) => {
     return Array.from(
@@ -29,25 +31,82 @@ const URLModal = ({ url, onClose }) => {
     );
   };
 
-  const getTimeAgo = (timestamp) => {
-    const date = new Date(timestamp);
+  function timeSinceExpiry(expiryDate, expiryTime) {
+    if (!expiryDate || !expiryTime) return null;
+
+    const [year, month, day] = expiryDate.split("-").map(Number);
+    const [hour, minute] = expiryTime.split(":").map(Number);
+    // Create expiry date in local timezone
+    const expiryDateTime = new Date(year, month - 1, day, hour, minute, 0);
     const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
+    const diffMs = now - expiryDateTime;
+    const diffSeconds = Math.abs(diffMs) / 1000;
+    // Check if expired or not
+    const isExpired = diffMs > 0;
+    // Calculate time difference
+    const secondsInYear = 3600 * 24 * 365.25;
+    const years = Math.floor(diffSeconds / secondsInYear);
+    if (years >= 1) {
+      return { years, isExpired };
+    }
+    const days = Math.floor(diffSeconds / (3600 * 24));
+    const hours = Math.floor((diffSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((diffSeconds % 3600) / 60);
+    return { days, hours, minutes, isExpired };
+  }
 
-    const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  function formatExpiryTime(obj) {
+    if (!obj) return "No expiry set";
 
-    if (diffInSeconds < 60) return rtf.format(-diffInSeconds, "second");
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) return rtf.format(-diffInMinutes, "minute");
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return rtf.format(-diffInHours, "hour");
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 30) return rtf.format(-diffInDays, "day");
-    const diffInMonths = Math.floor(diffInDays / 30);
-    if (diffInMonths < 12) return rtf.format(-diffInMonths, "month");
-    const diffInYears = Math.floor(diffInMonths / 12);
-    return rtf.format(-diffInYears, "year");
-  };
+    if (obj.years) {
+      if (obj.isExpired) {
+        return `Expired ${obj.years} year${obj.years !== 1 ? "s" : ""} ago.`;
+      } else {
+        return `Expires in ${obj.years} year${obj.years !== 1 ? "s" : ""}.`;
+      }
+    }
+
+    const { days, hours, minutes, isExpired } = obj;
+    // Handle cases where some values might be 0
+    const parts = [];
+    if (days > 0) {
+      parts.push(`${days} day${days !== 1 ? "s" : ""}`);
+    }
+    if (hours > 0) {
+      parts.push(`${hours} hour${hours !== 1 ? "s" : ""}`);
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes} minute${minutes !== 1 ? "s" : ""}`);
+    }
+
+    // Handle edge case where it's been less than a minute
+    if (parts.length === 0) {
+      if (isExpired) {
+        return "Expired less than a minute ago.";
+      } else {
+        return "Expires in less than a minute.";
+      }
+    }
+
+    // Join parts with proper grammar
+    let timeString;
+    if (parts.length === 1) {
+      timeString = parts[0];
+    } else if (parts.length === 2) {
+      timeString = `${parts[0]} and ${parts[1]}`;
+    } else {
+      timeString = `${parts.slice(0, -1).join(", ")}, and ${
+        parts[parts.length - 1]
+      }`;
+    }
+
+    // Return appropriate message based on expiry status
+    if (isExpired) {
+      return `Expired ${timeString} ago.`;
+    } else {
+      return `Expires in ${timeString}.`;
+    }
+  }
 
   const fetchVisitAnalytics = async () => {
     const response = await axios.get(
@@ -126,6 +185,28 @@ const URLModal = ({ url, onClose }) => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
   }, []);
+
+  useEffect(() => {
+    if (urlAnalytics) {
+      // Ensure correct date format (YYYY-MM-DD)
+      if (urlAnalytics.expiryDate) {
+        setDate(new Date(urlAnalytics.expiryDate).toISOString().split("T")[0]);
+      } else {
+        setDate("");
+      }
+
+      // Ensure correct time format (HH:MM)
+      if (urlAnalytics.expiryTime) {
+        const timeString = urlAnalytics.expiryTime
+          .split(":")
+          .slice(0, 2)
+          .join(":");
+        setTime(timeString);
+      } else {
+        setTime("");
+      }
+    }
+  }, [urlAnalytics]);
 
   const handleClose = () => {
     const modal = document.querySelector(".modal-content");
@@ -269,7 +350,7 @@ const URLModal = ({ url, onClose }) => {
                       <div
                         onClick={() =>
                           handleCopy({
-                            content: `${FRONTEND_URL}/${url.shortId}`,
+                            content: `${FRONTEND_URL}/link/${url.shortId}`,
                           })
                         }
                         className="cursor-pointer"
@@ -287,65 +368,67 @@ const URLModal = ({ url, onClose }) => {
                     </div>
                   </div>
 
-                  {/*  URL Status*/}
-                  <div className="flex gap-4 w-full">
-                    <div className="w-full">
+                  <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    {/* URL Status */}
+                    <div className="flex-1 min-w-[180px]">
                       <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                         URL Status
                       </label>
-                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg ">
+                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
+                          height="22"
                           viewBox="0 -960 960 960"
-                          width="24px"
+                          width="22"
                           fill="#78A75A"
                         >
                           <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
                         </svg>
-                        <span>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200">
                           {urlAnalytics.isActive ? "Active" : "Inactive"}
                         </span>
                       </div>
                     </div>
-                    <div className="w-full">
+
+                    {/* URL Expiry */}
+                    <div className="flex-1 min-w-[180px]">
                       <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                         URL Expiry
                       </label>
-                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg ">
+                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
+                          height="22"
                           viewBox="0 -960 960 960"
-                          width="24px"
+                          width="22"
                           fill="#434343"
                         >
                           <path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" />
                         </svg>
-                        <span>
-                          {urlAnalytics.isExpiry ? (
-                            <div>Soon</div>
-                          ) : (
-                            <div>No Expiry</div>
-                          )}
+                        <span className="font-semibold text-gray-700 dark:text-gray-200 text-xs sm:text-sm break-words">
+                          {formatExpiryTime(timeSinceExpiry(date, time))}
                         </span>
                       </div>
                     </div>
-                    <div className="w-full">
+
+                    {/* Total Clicks */}
+                    <div className="flex-1 min-w-[180px]">
                       <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                         Total Clicks
                       </label>
-                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg ">
+                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
+                          height="22"
                           viewBox="0 -960 960 960"
-                          width="24px"
+                          width="22"
                           fill="#434343"
                         >
                           <path d="M468-240q-96-5-162-74t-66-166q0-100 70-170t170-70q97 0 166 66t74 162l-84-25q-13-54-56-88.5T480-640q-66 0-113 47t-47 113q0 57 34.5 100t88.5 56l25 84Zm48 158q-9 2-18 2h-18q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v18q0 9-2 18l-78-24v-12q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h12l24 78Zm305 22L650-231 600-80 480-480l400 120-151 50 171 171-79 79Z" />
                         </svg>
-                        <span>{urlAnalytics.totalClicks}</span>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200">
+                          {urlAnalytics.totalClicks}
+                        </span>
                       </div>
                     </div>
                   </div>

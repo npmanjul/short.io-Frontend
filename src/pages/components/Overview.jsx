@@ -45,9 +45,19 @@ const Overview = () => {
   };
 
   const getTimeAgo = (timestamp) => {
+    // Convert input timestamp to IST
     const date = new Date(timestamp);
+    const istDate = new Date(
+      date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+
+    // Get current time in IST
     const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
+    const istNow = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+
+    const diffInSeconds = Math.floor((istNow - istDate) / 1000);
 
     const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 

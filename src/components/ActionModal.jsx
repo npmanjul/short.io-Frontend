@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { BACKEND_URL } from "../utilis/constants.js";
 import Loader from "./Loader.jsx";
 import useStore from "../store.js";
+import { CalendarDays, Clock, FolderClock } from "lucide-react";
 
 const ActionModal = ({ url, onClose }) => {
   // State
@@ -184,98 +185,105 @@ const ActionModal = ({ url, onClose }) => {
   return (
     url && (
       <div
-        className="fixed inset-0 z-50 flex justify-center items-center bg-black/75 backdrop-blur-sm transition-opacity w-full"
+        className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={handleClose}
       >
         <div
-          className="relative p-4 w-full max-w-md bg-white rounded-lg shadow-lg mx-2"
+          className="relative w-full max-w-md mx-2 bg-white rounded-2xl shadow-2xl border border-blue-100 p-0 flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              URL Action
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b">
+            <h3 className="text-xl font-bold text-black">
+              URL Expiry Settings
             </h3>
             <button
               onClick={handleClose}
-              className="text-gray-400 bg-gray-200 rounded-lg text-sm h-8 w-8 flex justify-center items-center cursor-pointer"
+              className="text-gray-400 hover:text-gray-600 transition rounded-full p-1"
+              aria-label="Close"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#434343"
-              >
-                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18 6L6 18M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
 
+          {/* Loader */}
           {isLoading ? (
-            <div className="flex justify-center items-center h-[50vh]">
+            <div className="flex justify-center items-center h-[200px]">
               <Loader
                 height={"h-8"}
                 width={"w-8"}
-                color={"text-white"}
-                bgColor={"fill-black"}
+                color={"text-blue-700"}
+                bgColor={"fill-blue-200"}
               />
             </div>
           ) : (
-            <div className="p-4">
-              <div className="w-full">
-                <div className="flex justify-between items-center w-full pb-2">
-                  <div className="text-start font-bold text-[18px]">
-                    Set URL Expiry
-                  </div>
-                  <div>{formatExpiryTime(timeSinceExpiry(date, time))}</div>
-                  <div
-                    onClick={resetButton}
-                    className="text-end text-blue-700 cursor-pointer"
-                  >
-                    Reset
-                  </div>
+            <div className="px-6 py-6">
+              {/* Expiry Info */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="font-semibold text-zinc-800 flex items-center gap-2">
+                  <FolderClock className="w-5 h-5 text-blue-500" />
+                  <span>{formatExpiryTime(timeSinceExpiry(date, time))}</span>
                 </div>
+                <button
+                  onClick={resetButton}
+                  className="text-blue-600 text-sm font-medium hover:underline"
+                >
+                  Reset
+                </button>
+              </div>
 
-                <div className="flex flex-col gap-3">
-                  {/* Time Selection */}
-                  <div className="flex gap-2 w-full flex-col p-3 rounded-lg bg-gray-100">
-                    <span className="font-bold text-start">Select Time:</span>
-                    <input
-                      type="time"
-                      id="time"
-                      min={new Date().toLocaleTimeString("en-CA", {
-                        timeZone: "Asia/Kolkata",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                      className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      value={time}
-                      onChange={(e) => setTime(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  {/* Date Selection */}
-                  <label className="flex gap-2 w-full flex-col p-3 rounded-lg bg-gray-100">
-                    <span className="font-bold text-start">Select Date:</span>
-                    <input
-                      type="date"
-                      value={date}
-                      min={new Date().toLocaleDateString("en-CA", {
-                        timeZone: "Asia/Kolkata",
-                      })}
-                      onChange={(e) => setDate(e.target.value)}
-                      className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    />
+              {/* Date & Time Pickers */}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="font-semibold text-zinc-700 flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-blue-400" />
+                    <span>Select Time</span>
                   </label>
+                  <input
+                    type="time"
+                    id="time"
+                    min={new Date().toLocaleTimeString("en-CA", {
+                      timeZone: "Asia/Kolkata",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-400 focus:border-blue-400 block w-full p-2.5"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-semibold text-zinc-700 flex items-center gap-2">
+                    <CalendarDays className="w-4 h-4 text-blue-400" />
+                    Select Date
+                  </label>
+                  <input
+                    type="date"
+                    value={date}
+                    min={new Date().toLocaleDateString("en-CA", {
+                      timeZone: "Asia/Kolkata",
+                    })}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-400 focus:border-blue-400 block w-full p-2.5"
+                  />
                 </div>
               </div>
 
+              {/* Save Button */}
               <button
                 onClick={handleInputField}
                 disabled={isSubmitting}
-                className={`w-full mt-4 text-white font-medium rounded-lg px-5 py-2.5 cursor-pointer ${
+                className={`w-full mt-6 text-white font-semibold rounded-lg px-5 py-2.5 shadow transition ${
                   isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-700 hover:bg-blue-800"

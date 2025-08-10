@@ -65,7 +65,7 @@ const GoogleAuth = () => {
         <div className="h-[1px] bg-neutral-600 w-full"></div>
       </div>
 
-      <div className="w-full">
+      <div className="w-full flex justify-center items-center flex-col">
         <GoogleLogin
           onSuccess={handleGoogleAuth}
           onError={handleGoogleError}
