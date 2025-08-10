@@ -50,7 +50,7 @@ const Signup = () => {
       <div className="pt-18 min-h-screen flex justify-center items-center bg-white">
         <div className="hidden lg:block">
           <img
-            src="/public/signup.png"
+            src="/signup.png"
             className="h-[500px] w-[500px] object-contain"
             alt="signup"
           />

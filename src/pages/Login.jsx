@@ -150,7 +150,7 @@ const Login = () => {
           </div>
           <div className="hidden lg:flex justify-center items-center w-full">
             <img
-              src="/public/login.png"
+              src="/login.png"
               className="h-[400px] w-[400px] object-contain"
               alt="login"
             />
