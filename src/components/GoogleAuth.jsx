@@ -1,38 +1,64 @@
 import React, { useState } from "react";
 import { auth, googleProvider } from "../utilis/firebaseConfig.js";
-import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utilis/constants";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const GoogleAuth = () => {
   const navigate = useNavigate();
-  const signInWithGoogle = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      if (result.user) {
-        const response = await axios.post(`${BACKEND_URL}/user/googleauth`, {
-          email: result.user.email,
-          name: result.user.displayName,
-          pic: result.user.photoURL,
-          uid: result.user.uid,
-        });
+  const [loading, setLoading] = useState(false);
 
-        if (response.status === 201) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userId", response.data._id);
-          navigate("/url");
-          toast.success("Login successful");
-        }
+  const handleGoogleAuth = async (credentialResponse) => {
+    try {
+      setLoading(true);
+
+      // Decode the JWT token from Google
+      const decoded = jwtDecode(credentialResponse.credential);
+      console.log("Decoded JWT:", decoded);
+
+      // Send the decoded user data to backend
+      const response = await axios.post(`${BACKEND_URL}/user/googleauth`, {
+        email: decoded.email,
+        name: decoded.name,
+        pic: decoded.picture,
+        uid: decoded.sub,
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        // Store authentication data
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data._id);
+
+        navigate("/");
+        toast.success("Login successful");
       } else {
-        toast.error("authentication Failed");
+        toast.error("Authentication failed");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.error("Google Auth Error:", error);
+
+      // Handle different types of errors
+      if (error.response) {
+        toast.error(error.response.data.message || "Authentication failed");
+      } else if (error.request) {
+        toast.error("Network error. Please try again.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleGoogleError = () => {
+    console.log("Google Login Failed");
+    toast.error("Google login failed. Please try again.");
+  };
+
   return (
     <>
       <div className="text-[14px] text-neutral-400 py-4 w-full flex justify-center items-center gap-2">
@@ -42,15 +68,16 @@ const GoogleAuth = () => {
       </div>
 
       <div className="w-full">
-        <button
-          onClick={signInWithGoogle}
-          className="flex items-center justify-center gap-2 bg-white dark:bg-black text-black-700 dark:text-white border py-2 border-gray-300 shadow-md  rounded-lg hover:bg-gray-100 hover:dark:bg-gray-600 cursor-pointer transition duration-300 w-full"
-        >
-          <FcGoogle size={25} />
-          <span className="text-[16px] font-medium dark:text-white text-black">
-            Sign in with Google
-          </span>
-        </button>
+        <GoogleLogin
+          onSuccess={handleGoogleAuth}
+          onError={handleGoogleError}
+          disabled={loading}
+        />
+        {loading && (
+          <div className="text-center mt-2 text-sm text-neutral-400">
+            Authenticating...
+          </div>
+        )}
       </div>
     </>
   );
