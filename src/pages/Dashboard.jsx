@@ -9,7 +9,9 @@ import toast from "react-hot-toast";
 import useStore from "../store";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("tab"));
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem("tab") || "tabOverview"
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
