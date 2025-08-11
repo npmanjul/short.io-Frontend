@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import GoogleAuth from "../components/GoogleAuth";
 import Loader from "../components/Loader";
 import { BACKEND_URL } from "../utilis/constants";
+import OtpVerificationModal from "../components/OtpVerificationModal";
 
 const Signup = () => {
   const [visible, setVisible] = useState(false);
@@ -15,6 +16,7 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [isOtpOpen, setIsOtpOpen] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,8 +24,8 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Function to handle the actual signup after OTP verification
+  const handleActualSubmit = async () => {
     setLoader(true);
 
     try {
@@ -32,7 +34,6 @@ const Signup = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data._id);
         navigate("/");
-        toast.success("Signup successful");
         setLoader(false);
       } else {
         toast.error("Unexpected response from the server");
@@ -42,6 +43,39 @@ const Signup = () => {
       toast.error(error.response.data.message);
       setLoader(false);
     }
+  };
+
+  // Function to handle form submission (opens OTP modal)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${BACKEND_URL}/user/checkuser`, {
+        email: formData.email,
+      });
+      if (response.data.exists) {
+        toast.error("Email already in use");
+        return;
+      }
+    } catch (error) {
+      toast.error("Error checking email");
+      return;
+    }
+
+    // Open OTP modal for verification
+    setIsOtpOpen(true);
+  };
+
+  // Function called when OTP is successfully verified
+  const handleOtpVerified = () => {
+    setIsOtpOpen(false);
+    handleActualSubmit(); // Now submit the form after OTP verification
   };
 
   return (
@@ -71,6 +105,7 @@ const Signup = () => {
                   className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   onChange={handleChange}
                   value={formData.name}
+                  required
                 />
                 <div className="absolute top-[38px] left-[12px]">
                   <svg
@@ -94,6 +129,7 @@ const Signup = () => {
                   className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
                 <div className="absolute top-[38px] left-[12px]">
                   <svg
@@ -117,6 +153,7 @@ const Signup = () => {
                   className="w-full px-11 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white text-zinc-900"
                   onChange={handleChange}
                   value={formData.password}
+                  required
                 />
                 <div className="absolute top-[38px] left-[12px]">
                   <svg
@@ -161,7 +198,11 @@ const Signup = () => {
                 </div>
               </label>
 
-              <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 mt-4 rounded-lg transition duration-200 cursor-pointer">
+              <button
+                type="submit"
+                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 mt-4 rounded-lg transition duration-200 cursor-pointer"
+                disabled={loader}
+              >
                 {loader ? (
                   <Loader
                     height={"h-6"}
@@ -174,6 +215,15 @@ const Signup = () => {
                 )}
               </button>
             </form>
+
+            <OtpVerificationModal
+              isOpen={isOtpOpen}
+              onClose={() => setIsOtpOpen(false)}
+              email={formData.email} // Use the email from form data
+              onOtpVerified={handleOtpVerified}
+              message={"Signup successful"}
+            />
+
             <GoogleAuth />
           </div>
         </div>

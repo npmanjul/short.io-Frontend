@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup";
 import TimeOut from "./pages/TimeOut.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Forget_Password from "./pages/Forget_Password.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/timeout" element={<TimeOut />} />
+        <Route path="/forgot-password" element={<Forget_Password />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

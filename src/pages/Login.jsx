@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import GoogleAuth from "../components/GoogleAuth.jsx";
 import Loader from "../components/Loader.jsx";
 import Navbar from "../components/Navbar.jsx";
@@ -133,7 +133,11 @@ const Login = () => {
                 </div>
               </label>
 
-              <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 mt-4 rounded-lg transition duration-200 cursor-pointer">
+              <div className="w-full justify-end items-center flex text-blue-500 text-[14px]">
+                <NavLink to="/forgot-password">forget password ?</NavLink>
+              </div>
+
+              <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 mt-2 rounded-lg transition duration-200 cursor-pointer">
                 {loader ? (
                   <Loader
                     height={"h-6"}
