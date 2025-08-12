@@ -62,7 +62,6 @@ const Redirect = () => {
       // More robust check for isActive
       if (response.data && typeof response.data.isActive !== "undefined") {
         setIsActive(response.data.isActive);
-        console.log("Setting isActive to:", response.data.isActive);
       } else {
         console.warn("isActive not found in response, defaulting to false");
         setIsActive(false);
@@ -177,9 +176,7 @@ const Redirect = () => {
   // Function to push analytics data
   const pushAnalytics = async () => {
     try {
-      console.log("Pushing analytics data:", analyticsData);
       await axios.post(`${BACKEND_URL}/analytics/pushanalytics`, analyticsData);
-      console.log("Analytics pushed successfully");
     } catch (error) {
       console.error("Error pushing analytics:", error);
     }
@@ -189,13 +186,7 @@ const Redirect = () => {
   const handleRedirection = async () => {
     if (hasRedirected) return; // Prevent multiple redirections
 
-    console.log("Handling redirection with:", {
-      redirectURL,
-      isActive,
-      analyticsReady:
-        analyticsData.location !== "unavailable" &&
-        analyticsData.ipAddress !== "unavailable",
-    });
+    checkUrlActive();
 
     // Check if we have all necessary data
     if (!redirectURL) {
@@ -203,8 +194,8 @@ const Redirect = () => {
       return;
     }
 
-    if (isActive === null) {
-      console.log("Waiting for isActive status...");
+    if (isActive === false) {
+      window.location.href = "/timeout";
       return;
     }
 
@@ -212,7 +203,6 @@ const Redirect = () => {
       analyticsData.location === "unavailable" ||
       analyticsData.ipAddress === "unavailable"
     ) {
-      console.log("Waiting for analytics data...");
       return;
     }
 
@@ -221,13 +211,10 @@ const Redirect = () => {
 
     try {
       await pushAnalytics();
-      console.log("Analytics pushed, now redirecting...");
 
       if (isActive === true) {
-        console.log("URL is active, redirecting to:", redirectURL);
         window.location.href = redirectURL;
       } else {
-        console.log("URL is inactive, redirecting to timeout page");
         window.location.href = "/timeout";
       }
     } catch (error) {
@@ -248,19 +235,17 @@ const Redirect = () => {
       const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
       setSelectedQuote(motivationalQuotes[randomIndex]);
     }
-    checkUrlActive();
     fetchRedirectUrl();
   }, [id]);
 
   // Handle redirection when all data is ready
   useEffect(() => {
     handleRedirection();
+    checkUrlActive();
   }, [redirectURL, isActive, analyticsData.location, analyticsData.ipAddress]);
 
   // Fetch analytics data
   useEffect(() => {
-    console.log("Fetching analytics data...");
-
     // Set device info
     setAnalyticsData((prev) => ({
       ...prev,

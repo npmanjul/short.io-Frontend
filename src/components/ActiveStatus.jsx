@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 const ActiveStatus = ({ isActive, shortId }) => {
   const [isChecked, setIsChecked] = useState(isActive);
 
+  // console.log("Initial isChecked state:", isChecked);
+
   const handleIsActive = async (e) => {
     setIsChecked(e.target.checked);
     try {
